@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maya - Compliance Guardian</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0c14;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #12151f;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+      border: 1px solid #1e2a4a;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: #00d4ff;
+      font-size: 3rem;
+      margin: 0;
+    }
+
+    .subtitle {
+      color: #8ab4f7;
+      font-size: 1.35rem;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #a8c7fa;
+      display: block;
+      margin: 25px 0 10px 0;
+    }
+
+    textarea {
+      width: 100%;
+      height: 180px;
+      padding: 18px;
+      background: #0a0c14;
+      border: 1px solid #334466;
+      border-radius: 14px;
+      color: #e0e0e0;
+      font-size: 1.15rem;
+      line-height: 1.6;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, #00d4ff, #0099cc);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+    }
+
+    /* FIXED RESULT BOX */
+    #result {
+      margin-top: 35px;
+      padding: 28px;
+      background: #0a0c14;
+      border: 1px solid #334466;
+      border-radius: 14px;
+      font-size: 1.12rem;
+      line-height: 1.75;
+
+      /* Prevent overflow */
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+
+      /* Scroll for long responses */
+      max-height: 500px;
+      overflow-y: auto;
+
+      /* Optional styling */
+      border-left: 4px solid #00d4ff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🌟 Maya</h1>
+    </div>
+
+    <p class="subtitle">Your Intelligent Compliance Guardian • Financial Services</p>
+
+    <label>What would you like to do?</label>
+    <textarea id="prompt" placeholder="Example: Help me write code to update the fund transfer logic..."></textarea>
+
+    <button onclick="askMaya()">🌟 Ask Maya</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function askMaya() {
+      const prompt = document.getElementById('prompt').value.trim();
+      if (!prompt) {
+        alert("Please enter your request!");
+        return;
+      }
+
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = "<strong>Maya is thinking...</strong>";
+
+      try {
+        const res = await fetch('http://localhost:8000/guard', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: prompt })
+        });
+
+        const data = await res.json();
+
+        // Removed <pre> to prevent overflow issues
+        resultDiv.innerHTML = `<strong>Maya's Response:</strong><div>${data.compliance_guard}</div>`;
+
+      } catch (err) {
+        resultDiv.innerHTML =
+          `<span style="color:#ff6666">Error: Backend not running. Please start Maya using uvicorn.</span>`;
+      }
+    }
+  </script>
+</body>
+</html>
